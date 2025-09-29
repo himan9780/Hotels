@@ -1,26 +1,8 @@
-// let age = prompt("Enter your age");
-// if(age > 18){
-//     console.log("You are eligible")
-// }
-// else{
-//     console.log("You are not eligible");
-// }
-// const prompt = require('prompt-sync')();
-
-// let age = prompt("Enter your age: ");
-// console.log(`Your age is ${age}`);
-
-// const notes = require('./notes.js')
-// let age = notes.age
-// console.log(age)
-
-// let result = notes.addNumber(10 ,20)
-// console.log(result) 
 const express = require('express')
 const app = express()
 const db = require('./db')
 require('dotenv').config();
-
+const passport = require('./auth');
 
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -28,6 +10,17 @@ app.use(bodyParser.json());
 const PORT = process.env.PORT || 3000;
 
 
+//Middleware function
+// const logRequest = (req, res, next) => {
+//     console.log(`${new Date().toLocaleString()} Request Made to: ${req.originalUrl}`);
+//     next();
+// }
+// app.use(logRequest);
+
+
+app.use(passport.initialize());
+
+const localAuthMiddleware = passport.authenticate('local', {session : false})
 app.get('/', function(req, res){
     res.send("Hello World Hotel... How i can help you?, we have list of menus")
 })
@@ -39,7 +32,7 @@ const MenuItemRoutes = require('./routes/MenuItemRoute')
 
 
 
-app.use('/person', personRoutes);
+app.use('/person', localAuthMiddleware, personRoutes);
 app.use('/menu', MenuItemRoutes);
 
 
