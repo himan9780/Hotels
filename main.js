@@ -21,6 +21,7 @@ const PORT = process.env.PORT || 3000;
 app.use(passport.initialize());
 
 const localAuthMiddleware = passport.authenticate('local', {session : false})
+
 app.get('/', function(req, res){
     res.send("Hello World Hotel... How i can help you?, we have list of menus")
 })
